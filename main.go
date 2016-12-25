@@ -42,9 +42,11 @@ func main() {
 	signal.Notify(ch, os.Kill)
 
 	port := strconv.Itoa(*portNo)
+	fmt.Printf("Serving folder %q at http://%s:%s\n", *rootDir, *hostName, port)
 	go serveDir(*hostName, port, *rootDir)
 
 	// wait for Ctrl + C
+	fmt.Println("Press Ctrl + C to exit ...")
 	<-ch
 
 	// return to the previous folder
@@ -56,9 +58,8 @@ func main() {
 }
 
 func serveDir(host string, port string, dir string) {
-	fmt.Printf("Serve folder %q at http://%s:%s ...\n", dir, host, port)
-	err := http.ListenAndServe(host + ":"+port, http.FileServer(http.Dir(dir)))
+	err := http.ListenAndServe(host+":"+port, http.FileServer(http.Dir(dir)))
 	if err != nil {
-		log.Fatalf("failed to serve %s on %s:%s\n", dir, host, port)
+		log.Fatalf("failed to serve %s at %s:%s\n", dir, host, port)
 	}
 }
