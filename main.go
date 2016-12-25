@@ -10,6 +10,7 @@ import (
 	"strconv"
 )
 
+var hostName = flag.String("host", "localhost", "The hostname: angang.ca or 127.0.0.1")
 var portNo = flag.Int("port", 8088, "The HTTP Port number to listen")
 var rootDir = flag.String("dir", ".", "The directory to serve")
 
@@ -41,23 +42,23 @@ func main() {
 	signal.Notify(ch, os.Kill)
 
 	port := strconv.Itoa(*portNo)
-	go serveDir(port, *rootDir)
+	go serveDir(*hostName, port, *rootDir)
 
 	// wait for Ctrl + C
 	<-ch
 
 	// return to the previous folder
 	if err = os.Chdir(oldDir); err != nil {
-		log.Fatalf("Can't return to %v", oldDir)
+		log.Fatalf("Can't return to %v\n", oldDir)
 	}
 
 	fmt.Println("Done.")
 }
 
-func serveDir(port string, dir string) {
-	fmt.Printf("Serve folder %q at http://localhost:%s ...\n", dir, port)
-	err := http.ListenAndServe(":"+port, http.FileServer(http.Dir(dir)))
+func serveDir(host string, port string, dir string) {
+	fmt.Printf("Serve folder %q at http://%s:%s ...\n", dir, host, port)
+	err := http.ListenAndServe(host + ":"+port, http.FileServer(http.Dir(dir)))
 	if err != nil {
-		log.Fatal("failed to serve")
+		log.Fatalf("failed to serve %s on %s:%s\n", dir, host, port)
 	}
 }
