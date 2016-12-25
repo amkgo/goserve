@@ -6,6 +6,6 @@ A simple HTTP server that serves the static HTML files in current folder at http
 To serve static HTML files in current folder at http://localhost:8088:  
 `goserve`
 
-To serve HTML files in different directory or at different port:  
-`goserve -dir=c:\your\folder -port=80`
+To serve HTML files in different directory or at different host or port:
+`goserve -dir=c:\your\folder -host=mydomain.com -port=80`
 
